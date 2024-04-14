@@ -106,6 +106,7 @@
             // 
             // txt_chiSoNuocCu
             // 
+            this.txt_chiSoNuocCu.Enabled = false;
             this.txt_chiSoNuocCu.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_chiSoNuocCu.Location = new System.Drawing.Point(885, 115);
             this.txt_chiSoNuocCu.Name = "txt_chiSoNuocCu";
@@ -133,6 +134,7 @@
             // 
             // txt_chiSoDienCu
             // 
+            this.txt_chiSoDienCu.Enabled = false;
             this.txt_chiSoDienCu.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_chiSoDienCu.Location = new System.Drawing.Point(244, 163);
             this.txt_chiSoDienCu.Name = "txt_chiSoDienCu";

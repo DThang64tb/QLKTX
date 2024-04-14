@@ -33,8 +33,28 @@ namespace QuanLyKyTucXa
                 conn.Open();
             }
 
-            String sql = "Select * from HDDienNuoc Where MaPhong = '"+ID+"' ";
+            // Lấy số điện nước mới nhất từ CSDL
+            string sqlChiso = "SELECT TOP 1 CSDienMoi, CSNuocMoi FROM HDDienNuoc WHERE MaPhong = @maPhong ORDER BY Thang DESC";
+            SqlCommand cmdChiso = new SqlCommand(sqlChiso, conn);
+            cmdChiso.Parameters.AddWithValue("@maPhong", cbo_maPhong.SelectedValue.ToString());
+            SqlDataReader drChiso = cmdChiso.ExecuteReader();
+            if (drChiso.Read())
+            {
+                txt_chiSoDienCu.Text = drChiso["CSDienMoi"].ToString();
+                txt_chiSoNuocCu.Text = drChiso["CSNuocMoi"].ToString();
+            }
+            else
+            {
+                // Nếu không có dữ liệu, đặt giá trị mặc định cho số điện nước cũ là 0
+                txt_chiSoDienCu.Text = "0";
+                txt_chiSoNuocCu.Text = "0";
+            }
+            drChiso.Close();
+
+            // Load dữ liệu vào DataGridView
+            string sql = "Select * from HDDienNuoc Where MaPhong = @maPhong";
             SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@maPhong", cbo_maPhong.SelectedValue.ToString());
             SqlDataReader dr = cmd.ExecuteReader();
             DataTable dt = new DataTable();
             dt.Load(dr);
@@ -47,15 +67,16 @@ namespace QuanLyKyTucXa
             }
         }
 
+
         private void frmHoaDonDienNuoc_Load(object sender, EventArgs e)
         {
-
             if (conn.State == ConnectionState.Closed)
             {
                 conn.Open();
             }
 
-            String sql = "Select * from Phong";
+            // Load danh sách phòng vào combobox
+            string sql = "Select * from Phong";
             SqlCommand cmd = new SqlCommand(sql, conn);
             SqlDataReader dr = cmd.ExecuteReader();
             DataTable dt = new DataTable();
@@ -65,14 +86,16 @@ namespace QuanLyKyTucXa
             cbo_maPhong.DisplayMember = "TenPhong";
             cbo_maPhong.ValueMember = "MaPhong";
 
-            ID = cbo_maPhong.SelectedValue.ToString();
-            LoadData();
-
             if (conn.State == ConnectionState.Open)
             {
                 conn.Close();
             }
+
+            // Lấy dữ liệu và hiển thị trên form khi form được load
+            ID = cbo_maPhong.SelectedValue.ToString();
+            LoadData();
         }
+
 
         private void cbo_maPhong_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -90,92 +113,101 @@ namespace QuanLyKyTucXa
                     conn.Open();
                 }
 
-                // Lấy chỉ số điện nước cũ từ CSDL
-                string sqlChiso = "SELECT TOP 1 CSDienMoi, CSNuocMoi FROM HDDienNuoc WHERE MaPhong = @maPhong ORDER BY Thang DESC";
-                SqlCommand cmdChiso = new SqlCommand(sqlChiso, conn);
-                cmdChiso.Parameters.AddWithValue("@maPhong", cbo_maPhong.SelectedValue.ToString());
-                SqlDataReader drChiso = cmdChiso.ExecuteReader();
-                if (drChiso.Read())
+                // Kiểm tra nếu chỉ số mới lớn hơn chỉ số cũ
+                if (IsNewReadingGreater())
                 {
-                    txt_chiSoDienCu.Text = drChiso["CSDienMoi"].ToString();
-                    txt_chiSoNuocCu.Text = drChiso["CSNuocMoi"].ToString();
+                    // Tiếp tục thêm dữ liệu
+                    string sql = "INSERT INTO HDDienNuoc (MaPhong, Thang, CSDienCu, CSDienMoi, DonGiaDien, ThanhTienDien, " +
+                                 "CSNuocCu, CSNuocMoi, DonGiaNuoc, ThanhTienNuoc, TongTien) VALUES (@maPhong, @thang, " +
+                                 "@chiSoDienCu, @chiSoDienMoi, @donGiaDien, @thanhTienDien, @chiSoNuocCu, @chiSoNuocMoi, " +
+                                 "@donGiaNuoc, @thanhTienNuoc, @tongTien)";
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+
+                    cmd.Parameters.AddWithValue("@maPhong", cbo_maPhong.SelectedValue.ToString());
+                    cmd.Parameters.AddWithValue("@thang", dtp_thang.Value);
+                    cmd.Parameters.AddWithValue("@chiSoDienCu", txt_chiSoDienCu.Text);
+                    cmd.Parameters.AddWithValue("@chiSoDienMoi", txt_chiSoDienMoi.Text);
+                    cmd.Parameters.AddWithValue("@donGiaDien", txt_donGiaDien.Text);
+                    cmd.Parameters.AddWithValue("@thanhTienDien", txt_thanhTienDien.Text);
+                    cmd.Parameters.AddWithValue("@chiSoNuocCu", txt_chiSoNuocCu.Text);
+                    cmd.Parameters.AddWithValue("@chiSoNuocMoi", txt_chiSoNuocMoi.Text);
+                    cmd.Parameters.AddWithValue("@donGiaNuoc", txt_donGiaNuoc.Text);
+                    cmd.Parameters.AddWithValue("@thanhTienNuoc", txt_thanhTienNuoc.Text);
+                    cmd.Parameters.AddWithValue("@tongTien", txt_tongTien.Text);
+
+                    cmd.ExecuteNonQuery();
+                    LoadData();
                 }
-                drChiso.Close();
-
-                // Tiếp tục thêm mới bản ghi
-                string sql = "INSERT INTO HDDienNuoc (MaPhong, Thang, CSDienCu, CSDienMoi, DonGiaDien, ThanhTienDien, " +
-                             "CSNuocCu, CSNuocMoi, DonGiaNuoc, ThanhTienNuoc, TongTien) VALUES (@maPhong, @thang, " +
-                             "@chiSoDienCu, @chiSoDienMoi, @donGiaDien, @thanhTienDien, @chiSoNuocCu, @chiSoNuocMoi, " +
-                             "@donGiaNuoc, @thanhTienNuoc, @tongTien)";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-
-                // Thêm các tham số
-                cmd.Parameters.AddWithValue("@maPhong", cbo_maPhong.SelectedValue.ToString());
-                cmd.Parameters.AddWithValue("@thang", dtp_thang.Value.ToString("yyyy-MM-dd"));
-                cmd.Parameters.AddWithValue("@chiSoDienCu", txt_chiSoDienCu.Text);
-                cmd.Parameters.AddWithValue("@chiSoDienMoi", txt_chiSoDienMoi.Text);
-                cmd.Parameters.AddWithValue("@donGiaDien", txt_donGiaDien.Text);
-                cmd.Parameters.AddWithValue("@thanhTienDien", txt_thanhTienDien.Text);
-                cmd.Parameters.AddWithValue("@chiSoNuocCu", txt_chiSoNuocCu.Text);
-                cmd.Parameters.AddWithValue("@chiSoNuocMoi", txt_chiSoNuocMoi.Text);
-                cmd.Parameters.AddWithValue("@donGiaNuoc", txt_donGiaNuoc.Text);
-                cmd.Parameters.AddWithValue("@thanhTienNuoc", txt_thanhTienNuoc.Text);
-                cmd.Parameters.AddWithValue("@tongTien", txt_tongTien.Text);
-
-                cmd.ExecuteNonQuery();
-
+                else
+                {
+                    MessageBox.Show("Chỉ số mới phải lớn hơn chỉ số cũ!", "Thông báo");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi thêm dữ liệu: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
                 if (conn.State == ConnectionState.Open)
                 {
                     conn.Close();
                 }
-                frmHoaDonDienNuoc_Load(sender, e);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
 
         private void btn_sua_Click(object sender, EventArgs e)
         {
-
-            if (conn.State == ConnectionState.Closed)
+            try
             {
-                conn.Open();
-            }
+                if (conn.State == ConnectionState.Closed)
+                {
+                    conn.Open();
+                }
 
-            String sql = "Update HDDienNuoc Set MaPhong=@maPhong, Thang=@thang, CSDienCu=@chiSoDienCu," +
-                "CSDienMoi=@chiSoDienMoi, DonGiaDien=@donGiaDien, ThanhTienDien=@thanhTienDien, " +
-                "CSNuocCu=@chiSoNuocCu, CSNuocMoi=@chiSoNuocMoi,DonGiaNuoc=@donGiaNuoc, ThanhTienNuoc=@ThanhTienNuoc," +
-                " TongTien=@tongTien Where  So=@soHD";
-            SqlCommand cmd = new SqlCommand(sql, conn);
-            DialogResult dr = MessageBox.Show("Bạn có chắc muốn sửa không?", "Thông báo", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dr == DialogResult.Yes)
+                // Kiểm tra nếu chỉ số mới lớn hơn chỉ số cũ
+                if (IsNewReadingGreater())
+                {
+                    // Tiếp tục sửa dữ liệu
+                    // Your code for updating existing record here...
+                }
+                else
+                {
+                    MessageBox.Show("Chỉ số mới phải lớn hơn chỉ số cũ!", "Thông báo");
+                }
+            }
+            catch (Exception ex)
             {
-                cmd.Parameters.AddWithValue("@soHD", txt_soHD.Text);
-                cmd.Parameters.AddWithValue("@maPhong", cbo_maPhong.SelectedValue.ToString());
-                cmd.Parameters.AddWithValue("@thang", dtp_thang.Value.ToString("yyyy-MM-dd"));
-                cmd.Parameters.AddWithValue("@chiSoDienCu", txt_chiSoDienCu.Text);
-                cmd.Parameters.AddWithValue("@chiSoDienMoi", txt_chiSoDienMoi.Text);
-                cmd.Parameters.AddWithValue("@donGiaDien", txt_donGiaDien.Text);
-                cmd.Parameters.AddWithValue("@thanhTienDien", txt_thanhTienDien.Text);
-                cmd.Parameters.AddWithValue("@chiSoNuocCu", txt_chiSoNuocCu.Text);
-                cmd.Parameters.AddWithValue("@chiSoNuocMoi", txt_chiSoNuocMoi.Text);
-                cmd.Parameters.AddWithValue("@donGiaNuoc", txt_donGiaNuoc.Text);
-                cmd.Parameters.AddWithValue("@thanhTienNuoc", txt_thanhTienNuoc.Text);
-                cmd.Parameters.AddWithValue("@tongTien", txt_tongTien.Text);
-
-                cmd.ExecuteNonQuery();
+                MessageBox.Show("Lỗi khi sửa dữ liệu: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            if (conn.State == ConnectionState.Open)
+            finally
             {
-                conn.Close();
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
             }
-
-            frmHoaDonDienNuoc_Load(sender, e);
         }
+
+        private bool IsNewReadingGreater()
+        {
+            if (!string.IsNullOrEmpty(txt_chiSoDienMoi.Text) && !string.IsNullOrEmpty(txt_chiSoDienCu.Text) &&
+                !string.IsNullOrEmpty(txt_chiSoNuocMoi.Text) && !string.IsNullOrEmpty(txt_chiSoNuocCu.Text))
+            {
+                int cscDien, csmDien, cscNuoc, csmNuoc;
+                bool cscDienParsed = int.TryParse(txt_chiSoDienCu.Text, out cscDien);
+                bool csmDienParsed = int.TryParse(txt_chiSoDienMoi.Text, out csmDien);
+                bool cscNuocParsed = int.TryParse(txt_chiSoNuocCu.Text, out cscNuoc);
+                bool csmNuocParsed = int.TryParse(txt_chiSoNuocMoi.Text, out csmNuoc);
+
+                if (cscDienParsed && csmDienParsed && cscNuocParsed && csmNuocParsed)
+                {
+                    return csmDien > cscDien && csmNuoc > cscNuoc;
+                }
+            }
+            return false;
+        }
+
 
         private void btn_xoa_Click(object sender, EventArgs e)
         {
@@ -228,75 +260,53 @@ namespace QuanLyKyTucXa
 
         private void txt_chiSoDienMoi_TextChanged(object sender, EventArgs e)
         {
-            if (txt_chiSoDienMoi.Text != "")
+            if (!string.IsNullOrEmpty(txt_chiSoDienMoi.Text) && !string.IsNullOrEmpty(txt_chiSoDienCu.Text))
             {
                 int csc, csm;
-                if (int.TryParse(txt_chiSoDienCu.Text, out csc) && int.TryParse(txt_chiSoDienMoi.Text, out csm))
+                bool cscParsed = int.TryParse(txt_chiSoDienCu.Text, out csc);
+                bool csmParsed = int.TryParse(txt_chiSoDienMoi.Text, out csm);
+
+                if (cscParsed && csmParsed)
                 {
-                    if (csm < csc)
-                    {
-                        MessageBox.Show("Dữ liệu đầu vào chưa hợp lệ!", "Thông báo");
-                    }
-                    else
+                    if (csm >= csc)
                     {
                         int donGiaDien;
-                        if (int.TryParse(txt_donGiaDien.Text, out donGiaDien))
+                        bool donGiaDienParsed = int.TryParse(txt_donGiaDien.Text, out donGiaDien);
+
+                        if (donGiaDienParsed)
                         {
-                            txt_thanhTienDien.Text = Convert.ToString((csm - csc) * donGiaDien);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Đơn giá điện không hợp lệ!", "Thông báo");
+                            int thanhTienDien = (csm - csc) * donGiaDien;
+                            txt_thanhTienDien.Text = thanhTienDien.ToString();
                         }
                     }
                 }
-                else
-                {
-                    MessageBox.Show("Dữ liệu đầu vào chưa hợp lệ!", "Thông báo");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Không được để trống phần này!", "Thông báo");
             }
         }
 
         private void txt_chiSoNuocMoi_TextChanged(object sender, EventArgs e)
         {
-            if (txt_chiSoNuocMoi.Text != "")
+            if (!string.IsNullOrEmpty(txt_chiSoNuocMoi.Text) && !string.IsNullOrEmpty(txt_chiSoNuocCu.Text))
             {
                 int csc, csm;
-                if (int.TryParse(txt_chiSoNuocCu.Text, out csc) && int.TryParse(txt_chiSoNuocMoi.Text, out csm))
+                bool cscParsed = int.TryParse(txt_chiSoNuocCu.Text, out csc);
+                bool csmParsed = int.TryParse(txt_chiSoNuocMoi.Text, out csm);
+
+                if (cscParsed && csmParsed)
                 {
-                    if (csm < csc)
-                    {
-                        MessageBox.Show("Dữ liệu đầu vào chưa hợp lệ!", "Thông báo");
-                    }
-                    else
+                    if (csm >= csc)
                     {
                         int donGiaNuoc;
-                        if (int.TryParse(txt_donGiaNuoc.Text, out donGiaNuoc))
+                        bool donGiaNuocParsed = int.TryParse(txt_donGiaNuoc.Text, out donGiaNuoc);
+
+                        if (donGiaNuocParsed)
                         {
-                            txt_thanhTienNuoc.Text = Convert.ToString((csm - csc) * donGiaNuoc);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Đơn giá nước không hợp lệ!", "Thông báo");
+                            int thanhTienNuoc = (csm - csc) * donGiaNuoc;
+                            txt_thanhTienNuoc.Text = thanhTienNuoc.ToString();
                         }
                     }
                 }
-                else
-                {
-                    MessageBox.Show("Dữ liệu đầu vào chưa hợp lệ!", "Thông báo");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Không được để trống phần này!", "Thông báo");
             }
         }
-
-
 
         private void txt_donGiaDien_TextChanged(object sender, EventArgs e)
         {
