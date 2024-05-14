@@ -111,5 +111,19 @@ namespace QuanLyKyTucXa
             this.Hide();
             frm.ShowDialog();
         }
+
+        private void trangthaiphongoolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmTinhTrangPhong frm = new frmTinhTrangPhong();
+            this.Hide();
+            frm.ShowDialog();
+        }
+
+        private void thongke_Click(object sender, EventArgs e)
+        {
+            frmthongke frm = new frmthongke();
+            this.Hide();
+            frm.ShowDialog();
+        }
     }
 }

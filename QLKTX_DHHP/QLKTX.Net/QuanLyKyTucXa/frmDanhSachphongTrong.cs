@@ -42,7 +42,6 @@ namespace QuanLyKyTucXa
             }
         }
 
-
         private void btn_thoat_Click(object sender, EventArgs e)
         {
             frmMain frm = new frmMain();
@@ -57,12 +56,10 @@ namespace QuanLyKyTucXa
                 conn.Open();
             }
 
-            String sql = "Select * from Phong Where TenPhong = @TenPhong and SoNguoiHienTai < SoNguoiToiDa";
+            String sql = "Select * from Phong Where TenPhong = '"+txt_search.Text+"' and SoNguoiHienTai < SoNguoiToiDa";
             SqlCommand cmd = new SqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@TenPhong", txt_search.Text);
-
             SqlDataReader dr = cmd.ExecuteReader();
-            if (dr.HasRows == false)
+            if(dr.HasRows == false)
             {
                 MessageBox.Show("Không có phòng cần tìm kiếm.", "Thông báo");
             }
@@ -76,6 +73,5 @@ namespace QuanLyKyTucXa
                 conn.Close();
             }
         }
-
     }
 }

@@ -37,10 +37,10 @@
             this.soNguoiToiDa = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.giaPhong = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lbl_title = new System.Windows.Forms.Label();
-            this.btn_thoat = new System.Windows.Forms.Button();
             this.lbl_search = new System.Windows.Forms.Label();
             this.txt_search = new System.Windows.Forms.TextBox();
             this.btn_search = new System.Windows.Forms.Button();
+            this.btn_thoat = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_dsPhongTrong)).BeginInit();
             this.SuspendLayout();
             // 
@@ -130,21 +130,6 @@
             this.lbl_title.TabIndex = 1;
             this.lbl_title.Text = "Danh sách phòng còn trống";
             // 
-            // btn_thoat
-            // 
-            this.btn_thoat.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_thoat.Image = global::QuanLyKyTucXa.Properties.Resources.Next32;
-            this.btn_thoat.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_thoat.Location = new System.Drawing.Point(904, 88);
-            this.btn_thoat.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
-            this.btn_thoat.Name = "btn_thoat";
-            this.btn_thoat.Size = new System.Drawing.Size(110, 64);
-            this.btn_thoat.TabIndex = 2;
-            this.btn_thoat.Text = "Thoát";
-            this.btn_thoat.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btn_thoat.UseVisualStyleBackColor = true;
-            this.btn_thoat.Click += new System.EventHandler(this.btn_thoat_Click);
-            // 
             // lbl_search
             // 
             this.lbl_search.AutoSize = true;
@@ -179,6 +164,21 @@
             this.btn_search.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btn_search.UseVisualStyleBackColor = true;
             this.btn_search.Click += new System.EventHandler(this.btn_search_Click);
+            // 
+            // btn_thoat
+            // 
+            this.btn_thoat.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_thoat.Image = global::QuanLyKyTucXa.Properties.Resources.Next32;
+            this.btn_thoat.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_thoat.Location = new System.Drawing.Point(904, 88);
+            this.btn_thoat.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
+            this.btn_thoat.Name = "btn_thoat";
+            this.btn_thoat.Size = new System.Drawing.Size(110, 64);
+            this.btn_thoat.TabIndex = 2;
+            this.btn_thoat.Text = "Thoát";
+            this.btn_thoat.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btn_thoat.UseVisualStyleBackColor = true;
+            this.btn_thoat.Click += new System.EventHandler(this.btn_thoat_Click);
             // 
             // frmDanhSachphongTrong
             // 

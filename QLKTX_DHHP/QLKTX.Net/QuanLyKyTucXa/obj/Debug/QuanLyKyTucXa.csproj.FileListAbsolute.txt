@@ -69,3 +69,5 @@ E:\HK5\MTLTTrucQuan\QLKTX_DHHP\QLKTX_DHHP\QLKTX.Net\QuanLyKyTucXa\obj\Debug\Quan
 E:\HK5\MTLTTrucQuan\QLKTX_DHHP\QLKTX_DHHP\QLKTX.Net\QuanLyKyTucXa\obj\Debug\QuanLyKyTucXa.exe
 E:\HK5\MTLTTrucQuan\QLKTX_DHHP\QLKTX_DHHP\QLKTX.Net\QuanLyKyTucXa\obj\Debug\QuanLyKyTucXa.pdb
 E:\HK5\MTLTTrucQuan\QLKTX_DHHP\QLKTX_DHHP\QLKTX.Net\QuanLyKyTucXa\obj\Debug\QuanLyKyTucXa.cbo_maPhong.resources
+E:\HK5\MTLTTrucQuan\QLKTX_DHHP\QLKTX_DHHP\QLKTX.Net\QuanLyKyTucXa\obj\Debug\QuanLyKyTucXa.frmTinhTrangPhong.resources
+E:\HK5\MTLTTrucQuan\QLKTX_DHHP\QLKTX_DHHP\QLKTX.Net\QuanLyKyTucXa\obj\Debug\QuanLyKyTucXa.frmthongke.resources
