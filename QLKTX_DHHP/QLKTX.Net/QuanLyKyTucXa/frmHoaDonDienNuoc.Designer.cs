@@ -88,8 +88,9 @@
             // 
             // dtp_thang
             // 
+            this.dtp_thang.CustomFormat = "MM/yyyy";
             this.dtp_thang.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtp_thang.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtp_thang.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtp_thang.Location = new System.Drawing.Point(885, 71);
             this.dtp_thang.Name = "dtp_thang";
             this.dtp_thang.Size = new System.Drawing.Size(231, 27);
